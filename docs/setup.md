@@ -16,13 +16,13 @@ The instructions are based on a real working installation that successfully tran
 
 Before starting, you need:
 
-* UGREEN NAS running UGOS Pro
-* Docker / Docker Projects installed
-* Proton Drive account
-* Proton 2FA enabled
-* Access to your Proton Base32 OTP Secret Key
-* rclone 1.74.4
-* A folder on the NAS that you want to back up
+- UGREEN NAS running UGOS Pro
+- Docker / Docker Projects installed
+- Proton Drive account
+- Proton 2FA enabled
+- Access to your Proton Base32 OTP Secret Key
+- rclone 1.74.4
+- A folder on the NAS that you want to back up
 
 ---
 
@@ -34,7 +34,7 @@ Go to:
 
 **Projects → Create Project**
 
-![Open Docker Projects and click Create](../images/01-ugreen-docker-project.png)
+![Open Docker Projects](../images/01-ugreen-docker-project.png)
 
 You will now see the Create Project screen:
 
@@ -74,7 +74,7 @@ docker-compose.yml
 
 The important folder mapping looks like this:
 
-```text
+```yaml
 - "/path/to/your/photos:/data/photo:ro"
 ```
 
@@ -92,13 +92,13 @@ If your NAS folder is:
 
 use:
 
-```text
+```yaml
 - "/volume1/Photos:/data/photo:ro"
 ```
 
 Another real-world example could be:
 
-```text
+```yaml
 - "/volume1/Family Photo And Videoes/Family Photo:/data/photo:ro"
 ```
 
@@ -118,9 +118,7 @@ means **read-only**.
 
 This allows the container to read the files but prevents it from modifying or deleting the originals on the NAS.
 
-Enter the Compose configuration:
-
-![Create Project with Compose configuration](../images/03-create-project-compose.png)
+![Docker Compose configuration](../images/03-create-project-compose.png)
 
 ---
 
@@ -128,7 +126,7 @@ Enter the Compose configuration:
 
 Start the project in the UGREEN Docker interface.
 
-The project should show that it is running:
+The project should appear as `proton-backup` and its status should show that it is running.
 
 ![proton-backup running](../images/04-proton-backup-running.png)
 
@@ -158,7 +156,7 @@ You should now have a command prompt inside the rclone container.
 
 Test rclone:
 
-```text
+```bash
 rclone version
 ```
 
@@ -176,7 +174,7 @@ rclone v1.74.4
 
 Run:
 
-```text
+```bash
 rclone config
 ```
 
@@ -204,9 +202,9 @@ When rclone shows the available storage providers, select:
 Proton Drive
 ```
 
-![Select Proton Drive](../images/08-select-proton-drive.png.png)
+![Select Proton Drive](../images/08-select-proton-drive.png)
 
-Select Proton Drive:
+After selecting Proton Drive, rclone will begin the Proton Drive configuration:
 
 ![Proton Drive selected](../images/09-select-proton-drive.png)
 
@@ -220,9 +218,9 @@ Enter your Proton account email and Proton account password when requested.
 
 If your Proton account uses 2FA, rclone will ask for authentication information.
 
-The following image shows example authentication values:
+The image below uses example values for the remaining authentication steps:
 
-![Proton authentication example](../images/11.png)
+![Proton authentication example](../images/11-proton-authentication-examples.png)
 
 You will encounter three different values during this process:
 
@@ -257,8 +255,6 @@ JBSWY3DPEHPK3PXPXXXXXXXXXXXXXXXX
 > **Caution**
 >
 > The example above is fake.
->
-> Never publish your real OTP Secret Key.
 
 ---
 
@@ -316,7 +312,7 @@ q
 
 Run:
 
-```text
+```bash
 rclone config show
 ```
 
@@ -334,13 +330,13 @@ Because the six-digit 2FA code expires, this can later prevent authentication ev
 
 Remove the temporary `2fa =` line with:
 
-```text
+```bash
 sed -i '/^2fa =/d' /config/rclone/rclone.conf
 ```
 
 Then check again:
 
-```text
+```bash
 rclone config show
 ```
 
@@ -358,7 +354,7 @@ entry.
 
 Before uploading anything, test the connection:
 
-```text
+```bash
 rclone lsd protondrive:
 ```
 
@@ -382,7 +378,7 @@ For example:
 
 Upload only that file:
 
-```text
+```bash
 rclone copy "/data/photo/2007/example.jpg" protondrive:"Test74"
 ```
 
@@ -390,10 +386,10 @@ Then open Proton Drive.
 
 Confirm that:
 
-* The file exists
-* The file can be opened
-* The file can be downloaded
-* The downloaded file is not corrupted
+- The file exists
+- The file can be opened
+- The file can be downloaded
+- The downloaded file is not corrupted
 
 Only continue when this test succeeds.
 
@@ -405,7 +401,7 @@ After the test file has been verified, start the full backup.
 
 Example:
 
-```text
+```bash
 rclone copy "/data/photo" protondrive:"Family Photo And Videoes/Family Photo" \
   --progress \
   --transfers=1 \
@@ -491,13 +487,13 @@ rclone will compare the source and destination and continue with files that stil
 
 This guide deliberately uses:
 
-```text
+```bash
 rclone copy
 ```
 
 instead of:
 
-```text
+```bash
 rclone sync
 ```
 
@@ -517,19 +513,19 @@ Example Docker mappings:
 
 ### Photos
 
-```text
+```yaml
 - "/volume1/Photos:/data/photo:ro"
 ```
 
 ### Videos
 
-```text
+```yaml
 - "/volume1/Videos:/data/video:ro"
 ```
 
 The video backup could then use:
 
-```text
+```bash
 rclone copy "/data/video" protondrive:"Family Videos" --progress
 ```
 
@@ -556,5 +552,9 @@ This was not only a small test installation.
 
 Continue with:
 
-* [Proton 2FA details](proton-2fa.md)
-* [Troubleshooting](troubleshooting.md)
+- [Proton 2FA details](proton-2fa.md)
+- [Troubleshooting](troubleshooting.md)
+
+---
+
+[← Back to main README](../README.md)
