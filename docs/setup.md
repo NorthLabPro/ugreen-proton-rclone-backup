@@ -1,165 +1,192 @@
-UGREEN NAS → Proton Drive Setup Guide
+# UGREEN NAS → Proton Drive Setup Guide
 
-This guide explains how to configure a UGREEN NAS running UGOS Pro to back up files to Proton Drive using Docker and rclone.
+This guide explains how to configure a UGREEN NAS running **UGOS Pro** to back up files to **Proton Drive** using Docker and rclone.
 
-The instructions are based on a real working installation that successfully transferred approximately 322 GB across 24,399 files.
+The instructions are based on a real working installation that successfully transferred approximately **322 GB across 24,399 files**.
 
-Important
+> **Important**
+>
+> This setup was tested with **rclone 1.74.4**.
+>
+> Always test with a few files before starting a large backup.
 
-This setup was tested with rclone 1.74.4.
+---
 
-Always test with a few files before starting a large backup.
-
-1. Requirements
+## 1. Requirements
 
 Before starting, you need:
 
-UGREEN NAS running UGOS Pro
-Docker / Docker Projects installed
-Proton Drive account
-Proton 2FA enabled
-Access to your Proton Base32 OTP Secret Key
-rclone 1.74.4
-A folder on the NAS that you want to back up
-2. Create the Docker Project
+* UGREEN NAS running UGOS Pro
+* Docker / Docker Projects installed
+* Proton Drive account
+* Proton 2FA enabled
+* Access to your Proton Base32 OTP Secret Key
+* rclone 1.74.4
+* A folder on the NAS that you want to back up
 
-Open Docker on your UGREEN NAS.
+---
+
+## 2. Create the Docker Project
+
+Open **Docker** on your UGREEN NAS.
 
 Go to:
 
-Projects → Create Project
+**Projects → Create Project**
+
+![Open Docker Projects and click Create](../images/01-ugreen-docker-project.png)
+
+You will now see the Create Project screen:
+
+![Create Project screen](../images/02-create-project-screen.png)
 
 Use:
 
+```text
 Project name: proton-backup
-
-
+```
 
 A typical project location is:
 
+```text
 Shared Folder/docker/proton-backup
-
-
+```
 
 The project will contain:
 
+```text
 proton-backup/
 ├── docker-compose.yml
 └── config/
+```
 
+The `config` folder will contain the rclone configuration after setup.
 
+---
 
-The config folder will contain the rclone configuration after setup.
-
-Warning
-
-Never upload your real rclone.conf to GitHub. It contains authentication information.
-
-Screenshot
-
-Image showing the UGREEN Docker Project creation screen will be added here.
-
-3. Docker Compose
+## 3. Docker Compose
 
 The repository contains the ready-to-use:
 
+```text
 docker-compose.yml
-
-
+```
 
 The important folder mapping looks like this:
 
+```text
 - "/path/to/your/photos:/data/photo:ro"
+```
 
+The path on the **left** is the real folder on your UGREEN NAS.
 
-The path on the left is the real folder on your UGREEN NAS.
+The path on the **right** is how rclone sees that folder inside the Docker container.
 
-The path on the right is how rclone sees that folder inside the Docker container.
-
-Example
+### Example
 
 If your NAS folder is:
 
+```text
 /volume1/Photos
-
-
+```
 
 use:
 
+```text
 - "/volume1/Photos:/data/photo:ro"
-
+```
 
 Another real-world example could be:
 
+```text
 - "/volume1/Family Photo And Videoes/Family Photo:/data/photo:ro"
-
+```
 
 Inside the container, both examples are accessed as:
 
+```text
 /data/photo
-
-
+```
 
 The final:
 
+```text
 :ro
+```
 
-
-
-means read-only.
+means **read-only**.
 
 This allows the container to read the files but prevents it from modifying or deleting the originals on the NAS.
 
-4. Start the Docker Project
+Enter the Compose configuration:
+
+![Create Project with Compose configuration](../images/03-create-project-compose.png)
+
+---
+
+## 4. Start the Docker Project
 
 Start the project in the UGREEN Docker interface.
 
+The project should show that it is running:
+
+![proton-backup running](../images/04-proton-backup-running.png)
+
 The container should appear as:
 
+```text
 proton-rclone
-
-
+```
 
 Its status should show that it is running.
 
-Screenshot
+![proton-rclone container](../images/05-proton-rclone-container.png)
 
-Image showing the running proton-rclone container will be added here.
+---
 
-5. Open the Container Terminal
+## 5. Open the Container Terminal
 
-Open the proton-rclone container.
+Open the `proton-rclone` container.
 
 Open its terminal and use:
 
+```text
 /bin/sh
-
-
+```
 
 You should now have a command prompt inside the rclone container.
 
 Test rclone:
 
+```text
 rclone version
-
+```
 
 The tested version for this guide should report:
 
+```text
 rclone v1.74.4
+```
 
+![rclone version](../images/06-rclone-version.png)
 
-6. Configure Proton Drive
+---
+
+## 6. Configure Proton Drive
 
 Run:
 
+```text
 rclone config
+```
 
+![rclone config menu](../images/07-rclone-config-menu.png)
 
 Choose:
 
+```text
 n
-
-
+```
 
 to create a new remote.
 
@@ -167,150 +194,181 @@ Enter a name.
 
 This guide uses:
 
+```text
 protondrive
-
-
+```
 
 When rclone shows the available storage providers, select:
 
+```text
 Proton Drive
+```
 
+![Select Proton Drive](../images/08-select-proton-drive.png.png)
 
+Select Proton Drive:
+
+![Proton Drive selected](../images/09-select-proton-drive.png)
 
 Enter your Proton account email and Proton account password when requested.
 
-7. Proton Two-Factor Authentication
+![Proton username prompt](../images/10-proton-username-prompt.png)
+
+---
+
+## 7. Proton Two-Factor Authentication
 
 If your Proton account uses 2FA, rclone will ask for authentication information.
 
+The following image shows example authentication values:
+
+![Proton authentication example](../images/11.png)
+
 You will encounter three different values during this process:
 
-Proton account password
+### Proton account password
 
 Your normal Proton login password.
 
-6-digit authentication code
+### 6-digit authentication code
 
 The temporary six-digit code generated by your authenticator app.
 
 Example:
 
+```text
 123456
-
-
+```
 
 This changes regularly.
 
-OTP Secret Key
+### OTP Secret Key
 
 This is completely different from the six-digit code.
 
-It is the long Base32 secret used by your authenticator to generate new codes automatically.
+It is the long **Base32 secret** used by your authenticator to generate new codes automatically.
 
 Example format:
 
+```text
 JBSWY3DPEHPK3PXPXXXXXXXXXXXXXXXX
+```
 
+> **Caution**
+>
+> The example above is fake.
+>
+> Never publish your real OTP Secret Key.
 
+---
 
-Caution
-
-The example above is fake.
-
-Never publish your real OTP Secret Key.
-
-8. The Confusing otp_secret_key Prompt
+## 8. The Confusing `otp_secret_key` Prompt
 
 During configuration rclone may display:
 
+```text
 Option otp_secret_key
-
-
+```
 
 Choose the option to enter your own value.
 
 rclone may then display:
 
+```text
 Enter the password:
-
-
+```
 
 This prompt is confusing.
 
-It is NOT asking for your Proton account password at this point.
+**It is NOT asking for your Proton account password at this point.**
 
-Enter your Base32 OTP Secret Key.
+Enter your **Base32 OTP Secret Key**.
 
 When rclone asks:
 
+```text
 Confirm the password:
-
-
+```
 
 enter the same Base32 OTP Secret Key again.
 
-9. Finish the Configuration
+---
+
+## 9. Finish the Configuration
 
 When asked about Advanced Config, choose:
 
+```text
 n
-
-
+```
 
 Keep the new remote when prompted.
 
 Then quit the configuration menu:
 
+```text
 q
+```
 
+---
 
-10. Check the Configuration
+## 10. Check the Configuration
 
 Run:
 
+```text
 rclone config show
-
+```
 
 You should see your Proton Drive remote.
 
 Do not copy or publish the complete output because it may contain authentication information.
 
-11. Remove an Expired 2fa Value
+---
 
-During testing we encountered an issue where a temporary 2FA value remained in rclone.conf.
+## 11. Remove an Expired `2fa` Value
+
+During testing we encountered an issue where a temporary 2FA value remained in `rclone.conf`.
 
 Because the six-digit 2FA code expires, this can later prevent authentication even though the OTP Secret Key is configured correctly.
 
-Remove the temporary 2fa = line with:
+Remove the temporary `2fa =` line with:
 
+```text
 sed -i '/^2fa =/d' /config/rclone/rclone.conf
-
+```
 
 Then check again:
 
+```text
 rclone config show
+```
 
+The configuration should contain the OTP-secret configuration but should **not** contain an old:
 
-The configuration should contain the OTP-secret configuration but should not contain an old:
-
+```text
 2fa =
-
-
+```
 
 entry.
 
-12. Test the Proton Drive Connection
+---
+
+## 12. Test the Proton Drive Connection
 
 Before uploading anything, test the connection:
 
+```text
 rclone lsd protondrive:
-
+```
 
 If authentication works, rclone should list the folders in your Proton Drive.
 
 Do not start a large backup until this command works correctly.
 
-13. Test With One File First
+---
+
+## 13. Test With One File First
 
 This step is strongly recommended.
 
@@ -318,32 +376,36 @@ Find one image inside the mapped NAS folder.
 
 For example:
 
+```text
 /data/photo/2007/example.jpg
-
-
+```
 
 Upload only that file:
 
+```text
 rclone copy "/data/photo/2007/example.jpg" protondrive:"Test74"
-
+```
 
 Then open Proton Drive.
 
 Confirm that:
 
-The file exists
-The file can be opened
-The file can be downloaded
-The downloaded file is not corrupted
+* The file exists
+* The file can be opened
+* The file can be downloaded
+* The downloaded file is not corrupted
 
 Only continue when this test succeeds.
 
-14. Full Backup
+---
+
+## 14. Full Backup
 
 After the test file has been verified, start the full backup.
 
 Example:
 
+```text
 rclone copy "/data/photo" protondrive:"Family Photo And Videoes/Family Photo" \
   --progress \
   --transfers=1 \
@@ -355,125 +417,144 @@ rclone copy "/data/photo" protondrive:"Family Photo And Videoes/Family Photo" \
   --protondrive-replace-existing-draft=true \
   --log-file=/config/photo-backup.log \
   --log-level=INFO
-
+```
 
 Change the Proton Drive destination:
 
+```text
 Family Photo And Videoes/Family Photo
-
-
+```
 
 to whatever destination you want to use.
 
-15. Why These Settings?
---transfers=1
+---
+
+## 15. Why These Settings?
+
+### `--transfers=1`
 
 Uploads one file at a time.
 
 This was chosen for reliability during the tested Proton Drive backup.
 
---checkers=2
+### `--checkers=2`
 
 Uses two checkers when comparing files.
 
---create-empty-src-dirs
+### `--create-empty-src-dirs`
 
 Creates empty source folders at the destination.
 
---retries=20
+### `--retries=20`
 
 Retries failed operations instead of stopping immediately.
 
---low-level-retries=50
+### `--low-level-retries=50`
 
 Allows additional retries for lower-level connection/API failures.
 
---retries-sleep=30s
+### `--retries-sleep=30s`
 
 Waits before retrying.
 
 This is useful if Proton temporarily rejects a request.
 
---protondrive-replace-existing-draft=true
+### `--protondrive-replace-existing-draft=true`
 
 Helps deal with incomplete/draft uploads already present in Proton Drive.
 
-Logging
+### Logging
 
 The log is stored at:
 
+```text
 /config/photo-backup.log
-
-
+```
 
 This is useful when troubleshooting failed transfers.
 
-16. Power or Internet Failure
+---
+
+## 16. Power or Internet Failure
 
 A large backup can take many hours or even days.
 
-If the NAS loses power or the internet connection disappears, you do not need to start everything from scratch.
+If the NAS loses power or the internet connection disappears, you do **not** need to start everything from scratch.
 
-Run the same rclone copy command again.
+Run the same `rclone copy` command again.
 
 rclone will compare the source and destination and continue with files that still need to be transferred.
 
-17. Why We Use copy Instead of sync
+---
+
+## 17. Why We Use `copy` Instead of `sync`
 
 This guide deliberately uses:
 
+```text
 rclone copy
-
+```
 
 instead of:
 
+```text
 rclone sync
-
+```
 
 For important photo and video archives this is safer.
 
-If a file is accidentally removed from the NAS, copy does not automatically mean that the Proton Drive backup must also be deleted.
+If a file is accidentally removed from the NAS, `copy` does not automatically mean that the Proton Drive backup must also be deleted.
 
 This gives the cloud copy an additional layer of protection.
 
-18. Photos and Videos
+---
+
+## 18. Photos and Videos
 
 For very large collections, it can be useful to back up photos and videos separately.
 
 Example Docker mappings:
 
-Photos
+### Photos
+
+```text
 - "/volume1/Photos:/data/photo:ro"
+```
 
-Videos
+### Videos
+
+```text
 - "/volume1/Videos:/data/video:ro"
-
+```
 
 The video backup could then use:
 
+```text
 rclone copy "/data/video" protondrive:"Family Videos" --progress
-
+```
 
 Test the photo backup completely before adding additional backup jobs.
 
-19. Tested Result
+---
+
+## 19. Tested Result
 
 The setup documented here has been used for a real-world transfer of approximately:
 
+```text
 322 GB
 24,399 files
-
-
+```
 
 from a UGREEN NAS to Proton Drive.
 
 This was not only a small test installation.
 
-Next
+---
+
+## Next
 
 Continue with:
 
-Proton 2FA details
-Troubleshooting
-
-← Back to main README
+* [Proton 2FA details](proton-2fa.md)
+* [Troubleshooting](troubleshooting.md)
