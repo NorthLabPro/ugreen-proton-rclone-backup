@@ -83,16 +83,6 @@ For an archive containing family photos or other important files, `copy` is the 
 
 Files that already exist at the destination can be skipped, while deleting a file from the NAS does not automatically mean that the cloud backup should also be deleted.
 
-## Security warning
-
-Never publish any of the following in a public GitHub repository:
-
-- Proton account password
-- Proton recovery information
-- 2FA recovery codes
-- Current 6-digit authentication codes
-- Base32 OTP Secret Key
-- A real `rclone.conf` containing credentials
 
 Example configuration files in this repository will use placeholders instead of real credentials.
 
