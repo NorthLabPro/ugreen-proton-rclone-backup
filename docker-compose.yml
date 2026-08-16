@@ -17,7 +17,7 @@ services:
       # Change ONLY the path on the LEFT to your own NAS folder.
       #
       # Example:
-      # "/volume1/Documents:/data/backup:ro"
+      # - "/volume1/Documents:/data/backup:ro"
       #
       # /data/backup is the folder name used inside the container.
       # :ro = read-only. rclone can read your files,
