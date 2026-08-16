@@ -287,10 +287,12 @@ Note: The storage number may be different in another rclone version. This guide 
 rclone will then continue with the Proton Drive configuration and ask for your Proton account information.
 
 
+
 ---
 
-# Part 3 — Proton Authentication
 
+
+```
 ## 10. Enter Your Proton Username
 
 When rclone displays:
@@ -298,8 +300,6 @@ When rclone displays:
 ```text
 Option username
 The username of your Proton account.
-```
-
 enter your Proton account email address.
 
 Example:
