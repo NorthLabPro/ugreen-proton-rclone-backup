@@ -269,6 +269,24 @@ Continue through the Proton Drive configuration.
 
 rclone will ask for your Proton account information.
 
+In the storage list, Proton Drive is shown as:
+
+
+```text
+49 / Proton Drive
+   \ (protondrive)
+
+Enter:
+
+49
+
+and press Enter.
+
+Note: The storage number may be different in another rclone version. This guide uses rclone 1.74.4, where Proton Drive is shown as 49. If your number is different, select the entry named Proton Drive (protondrive).
+
+rclone will then continue with the Proton Drive configuration and ask for your Proton account information.
+
+
 ---
 
 # Part 3 — Proton Authentication
