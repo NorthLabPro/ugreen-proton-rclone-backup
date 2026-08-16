@@ -12,10 +12,14 @@ services:
       # Stores the rclone configuration
       - ./config:/config/rclone
 
-      # Change the path on the LEFT to your own NAS folder.
-      # Example:
-      # "/volume1/Family Photos:/data/photo:ro"
+      # Choose the NAS folder you want to back up.
       #
-      # :ro = read-only. rclone can read the files,
-      # but cannot modify or delete the originals.
-      - "/path/to/your/photos:/data/photo:ro"
+      # Change ONLY the path on the LEFT to your own NAS folder.
+      #
+      # Example:
+      # "/volume1/Documents:/data/backup:ro"
+      #
+      # /data/backup is the folder name used inside the container.
+      # :ro = read-only. rclone can read your files,
+      # but cannot modify or delete the originals on the NAS.
+      - "/path/to/your/folder:/data/backup:ro"
