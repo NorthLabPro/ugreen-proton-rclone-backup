@@ -398,7 +398,6 @@ enter the same OTP secret again.
 | 6-digit authentication code | Temporary 2FA authentication           |
 | Base32 OTP Secret Key       | Automatic rclone Proton authentication |
 
-Never publish any of these values in screenshots.
 
 ---
 
