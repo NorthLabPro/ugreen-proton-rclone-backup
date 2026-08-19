@@ -310,7 +310,6 @@ yourname@proton.me
 
 ![Proton username](../images/10-proton-username-prompt.png)
 
-Do not publish screenshots containing your real Proton login information.
 
 ---
 
